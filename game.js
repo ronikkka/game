@@ -21,6 +21,19 @@ const enemies = [
     { x: 300, y: 530, width: 30, height: 30, speed: 2, dir: 1 }
 ];
 
+const coins = [
+    {x: 100, y: 545, width: 20, height: 20, collected: false},
+    {x: 250, y: 430, width: 20, height: 20, collected: false},
+    {x: 350, y: 400, width: 20, height: 20, collected: false},
+    {x: 500, y: 330, width: 20, height: 20, collected: false},
+    {x: 650, y: 230, width: 20, height: 20, collected: false},
+    {x: 700, y: 200, width: 20, height: 20, collected: false},
+    {x: 150, y: 300, width: 20, height: 20, collected: false},
+    {x: 550, y: 150, width: 20, height: 20, collected: false},
+    {x: 400, y: 280, width: 20, height: 20, collected: false},
+    {x: 750, y: 400, width: 20, height: 20, collected: false} 
+];
+
 function init() {
     gameState.running = false;
     gameState.paused = false;
@@ -31,6 +44,7 @@ function init() {
     player.grounded = false;
     gameState.score = 0; 
     gameState.health = 3;
+    coins.forEach(coin => coin.collected = false);
     enemies[0].x = 300; 
     enemies[0].dir = 1;
     updateUI();
@@ -69,6 +83,14 @@ function handleCollisions() {
 
         e.x += e.speed * e.dir;
         if (e.x <= 200 || e.x >= 500) e.dir *= -1;
+    });
+
+    coins.forEach (coin => {
+        if (!coin.collected && checkCollision(player, coin)) {
+            coin.collected = true;
+            gameState.score += 100;
+            updateUI();
+        }
     });
 }
 
@@ -141,6 +163,18 @@ function draw() {
         ctx.fillRect(e.x + 18, e.y + 8, 6, 6);
     });
 
+    coins.forEach(coin => {
+        if (!coin.collected) {
+            ctx.fillStyle = 'gold';
+            ctx.beginPath();
+            ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, Math.PI*2);
+            ctx.fill();
+            ctx.strokeStyle = 'orange';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    });
+
     ctx.fillStyle = '#3498DB';
     ctx.fillRect(player.x, player.y, player.width, player.height);
     ctx.fillStyle = 'white';
@@ -174,6 +208,11 @@ function gameLoop() {
 
 
 function endGame(win) {
+    if (win) {
+        let timeBonus = Math.max(0, 1000 - gameState.score/10); 
+        gameState.score += timeBonus;
+        updateUI();
+    }
     gameState.paused = true; 
     const message = win ? `Победа! Счёт: ${gameState.score}` : `Поражение! Счёт: ${gameState.score}`;
     setTimeout(() => alert(message), 100);
