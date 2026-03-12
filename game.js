@@ -22,16 +22,16 @@ const enemies = [
 ];
 
 const coins = [
-    {x: 100, y: 545, width: 20, height: 20, collected: false},
-    {x: 250, y: 430, width: 20, height: 20, collected: false},
-    {x: 350, y: 400, width: 20, height: 20, collected: false},
-    {x: 500, y: 330, width: 20, height: 20, collected: false},
-    {x: 650, y: 230, width: 20, height: 20, collected: false},
-    {x: 700, y: 200, width: 20, height: 20, collected: false},
-    {x: 150, y: 300, width: 20, height: 20, collected: false},
-    {x: 550, y: 150, width: 20, height: 20, collected: false},
-    {x: 600, y: 100, width: 20, height: 20, collected: false},
-    {x: 750, y: 400, width: 20, height: 20, collected: false} 
+    {x: 100, y: 540, width: 20, height: 20, collected: false},
+    {x: 250, y: 420, width: 20, height: 20, collected: false},
+    {x: 350, y: 420, width: 20, height: 20, collected: false},
+    {x: 500, y: 320, width: 20, height: 20, collected: false},
+    {x: 680, y: 220, width: 20, height: 20, collected: false},
+    {x: 750, y: 540, width: 20, height: 20, collected: false},
+    {x: 150, y: 380, width: 20, height: 20, collected: false},
+    {x: 550, y: 270, width: 20, height: 20, collected: false},
+    {x: 600, y: 450, width: 20, height: 20, collected: false},
+    {x: 750, y: 180, width: 20, height: 20, collected: false}
 ];
 
 function init() {
@@ -188,7 +188,6 @@ function draw() {
 let gameLoopId = null;
 
 function gameLoop() {
-    console.log('running=', gameState.running);
     if (gameState.running && !gameState.paused) {  
         updatePlayer();
         updateUI();
@@ -205,17 +204,14 @@ function gameLoop() {
     gameLoopId = requestAnimationFrame(gameLoop);
 }
 
-
 function endGame(win) {
     if (win) {
-        let timeBonus = Math.max(0, 5000 - gameState.score);
-        gameState.score += timeBonus;
-        updateUI();
-        alert(`Победа! Счёт: ${gameState.score} (+${timeBonus} бонус за скорость)`);
+        alert(`Победа! Вы собрали монеток на сумму: ${gameState.score}`);
     } else {
         alert(`Поражение! Счёт: ${gameState.score}`);
     }
     gameState.paused = true;
+    gameState.running = false;
 }
 
 function startGameLoop() { 
