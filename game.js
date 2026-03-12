@@ -6,7 +6,6 @@ const healthEl = document.getElementById('health');
 let gameState = { running: false, paused: false, score: 0, health: 3 };
 let keys = {};
 
-// --- ЗАГРУЗКА ИЗОБРАЖЕНИЙ ---
 const bgImage = new Image();
 bgImage.src = 'fon.png';
 
@@ -32,7 +31,7 @@ let frameCount = 0;
 let facingRight = true;
 
 const player = {
-    x: 50, y: 500, width: 40, height: 40, speed: 5, vX: 0, vY: 0, grounded: false
+    x: 50, y: 480, width: 60, height: 60, speed: 5, vX: 0, vY: 0, grounded: false
 };
 
 const platforms = [
@@ -47,16 +46,16 @@ const enemies = [
 ];
 
 const coins = [
-    {x: 100, y: 540, width: 20, height: 20, collected: false},
-    {x: 250, y: 420, width: 20, height: 20, collected: false},
-    {x: 350, y: 420, width: 20, height: 20, collected: false},
-    {x: 500, y: 320, width: 20, height: 20, collected: false},
-    {x: 680, y: 220, width: 20, height: 20, collected: false},
-    {x: 750, y: 540, width: 20, height: 20, collected: false},
-    {x: 150, y: 380, width: 20, height: 20, collected: false},
-    {x: 550, y: 270, width: 20, height: 20, collected: false},
-    {x: 600, y: 450, width: 20, height: 20, collected: false},
-    {x: 750, y: 180, width: 20, height: 20, collected: false}
+    {x: 100, y: 530, width: 35, height: 35, collected: false},
+    {x: 250, y: 410, width: 35, height: 35, collected: false},
+    {x: 350, y: 410, width: 35, height: 35, collected: false},
+    {x: 500, y: 310, width: 35, height: 35, collected: false},
+    {x: 680, y: 210, width: 35, height: 35, collected: false},
+    {x: 750, y: 530, width: 35, height: 35, collected: false},
+    {x: 150, y: 370, width: 35, height: 35, collected: false},
+    {x: 550, y: 260, width: 35, height: 35, collected: false},
+    {x: 600, y: 440, width: 35, height: 35, collected: false},
+    {x: 750, y: 170, width: 35, height: 35, collected: false}
 ];
 
 function init() {
@@ -150,7 +149,7 @@ function updatePlayer() {
 
     if (isMoving && player.grounded) {
         frameCount++;
-        if (frameCount >= 5) {
+        if (frameCount >= 15) {
             frameIndex++;
             if (frameIndex >= charWalk.length) {
                 frameIndex = 0;
