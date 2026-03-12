@@ -149,7 +149,8 @@ function updatePlayer() {
 
     if (isMoving && player.grounded) {
         frameCount++;
-        if (frameCount >= 15) {
+        let animationSpeed = 30; 
+        if (frameCount >= animationSpeed) {
             frameIndex++;
             if (frameIndex >= charWalk.length) {
                 frameIndex = 0;
@@ -158,6 +159,7 @@ function updatePlayer() {
         }
     } else {
         frameIndex = 0;
+        frameCount = 0; 
     }
 
     if (!player.grounded) player.vY += 0.9;
