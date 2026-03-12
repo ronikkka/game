@@ -27,7 +27,7 @@ charWalk[4].src = 'Char_walk_4.png';
 charWalk[5].src = 'Char_walk_5.png';
 
 let frameIndex = 0;
-let frameCount = 0;
+let lastFrameTime = Date.now(); 
 let facingRight = true;
 
 const player = {
@@ -148,18 +148,17 @@ function updatePlayer() {
     }
 
     if (isMoving && player.grounded) {
-        frameCount++;
-        let animationSpeed = 30; 
-        if (frameCount >= animationSpeed) {
+        let currentTime = Date.now();
+        if (currentTime - lastFrameTime >= 500) { 
             frameIndex++;
             if (frameIndex >= charWalk.length) {
                 frameIndex = 0;
             }
-            frameCount = 0;
+            lastFrameTime = currentTime;
         }
     } else {
         frameIndex = 0;
-        frameCount = 0; 
+        lastFrameTime = Date.now();
     }
 
     if (!player.grounded) player.vY += 0.9;
