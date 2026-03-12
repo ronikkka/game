@@ -154,6 +154,7 @@ function draw() {
 let gameLoopId = null;
 
 function gameLoop() {
+    console.log('running=', gameState.running);
     if (gameState.running && !gameState.paused) {  
         updatePlayer();
         gameState.score += 1;
