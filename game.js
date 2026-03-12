@@ -6,6 +6,7 @@ const healthEl = document.getElementById('health');
 let gameState = { running: false, paused: false, score: 0, health: 3 };
 let keys = {};
 
+// --- ЗАГРУЗКА ИЗОБРАЖЕНИЙ ---
 const bgImage = new Image();
 bgImage.src = 'fon.jpg';
 
@@ -19,7 +20,6 @@ const charWalk = [
     new Image(), new Image(), new Image(), 
     new Image(), new Image(), new Image()
 ];
-
 charWalk[0].src = 'Char_walk_0.jpg';
 charWalk[1].src = 'Char_walk_1.jpg';
 charWalk[2].src = 'Char_walk_2.jpg';
@@ -74,6 +74,7 @@ function init() {
     enemies[0].dir = 1;
     updateUI();
     keys = {};
+    frameIndex = 0;
 }
 
 function updateUI() {
@@ -103,15 +104,21 @@ function handleCollisions() {
         if (checkCollision(player, e)) {
             gameState.health--;
             gameState.score -= 300;
+            updateUI(); 
+            
             player.x = 50; player.y = 500; player.vX = 0; player.vY = 0;
-            if (gameState.health <= 0) endGame(false);
+            
+            if (gameState.health <= 0) {
+                setTimeout(() => {
+                    endGame(false);
+                }, 10);
+            }
         }
-
         e.x += e.speed * e.dir;
         if (e.x <= 200 || e.x >= 500) e.dir *= -1;
     });
 
-    coins.forEach (coin => {
+    coins.forEach(coin => {
         if (!coin.collected && checkCollision(player, coin)) {
             coin.collected = true;
             gameState.score += 100;
@@ -171,17 +178,17 @@ function updatePlayer() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (bgImage.complete) {
+    if (bgImage.complete && bgImage.naturalWidth !== 0) {
         ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
     } else {
         ctx.fillStyle = '#87CEEB';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    ctx.fillStyle = '#634b9f';
+    ctx.fillStyle = '#8c27ae';
     platforms.forEach(p => {
         ctx.fillRect(p.x, p.y, p.width, p.height);
-        ctx.strokeStyle = '#28115d';
+        ctx.strokeStyle = '#300748';
         ctx.lineWidth = 2;
         ctx.strokeRect(p.x, p.y, p.width, p.height);
     });
@@ -196,7 +203,7 @@ function draw() {
 
     coins.forEach(coin => {
         if (!coin.collected) {
-            if (coinImage.complete) {
+            if (coinImage.complete && coinImage.naturalWidth !== 0) {
                 ctx.drawImage(coinImage, coin.x, coin.y, coin.width, coin.height);
             } else {
                 ctx.fillStyle = 'gold';
@@ -208,16 +215,14 @@ function draw() {
     });
 
     let currentImage;
-    
     if (player.vX === 0 || !player.grounded) {
-        currentImage = charIdle; 
+        currentImage = charIdle;
     } else {
         currentImage = charWalk[frameIndex];
     }
 
-    if (currentImage.complete) {
+    if (currentImage && currentImage.complete && currentImage.naturalWidth !== 0) {
         ctx.save();
-
         if (!facingRight) {
             ctx.translate(player.x + player.width, player.y);
             ctx.scale(-1, 1);
@@ -225,7 +230,6 @@ function draw() {
         } else {
             ctx.drawImage(currentImage, player.x, player.y, player.width, player.height);
         }
-
         ctx.restore();
     } else {
         ctx.fillStyle = '#3498DB';
@@ -240,7 +244,7 @@ function gameLoop() {
         updatePlayer();
         updateUI();
         draw();
-    } else {
+    } else if (!gameState.running) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
         ctx.fillStyle = '#87CEEB'; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -282,4 +286,4 @@ document.getElementById('restart').onclick = () => {
 };
 
 init();       
-gameLoop();    
+gameLoop();   
