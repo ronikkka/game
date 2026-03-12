@@ -8,24 +8,24 @@ let keys = {};
 
 // --- ЗАГРУЗКА ИЗОБРАЖЕНИЙ ---
 const bgImage = new Image();
-bgImage.src = 'fon.jpg';
+bgImage.src = 'fon.png';
 
 const coinImage = new Image();
-coinImage.src = 'Coin.jpg';
+coinImage.src = 'Coin.png';
 
 const charIdle = new Image();
-charIdle.src = 'Char1.jpg';
+charIdle.src = 'Char1.png';
 
 const charWalk = [
     new Image(), new Image(), new Image(), 
     new Image(), new Image(), new Image()
 ];
-charWalk[0].src = 'Char_walk_0.jpg';
-charWalk[1].src = 'Char_walk_1.jpg';
-charWalk[2].src = 'Char_walk_2.jpg';
-charWalk[3].src = 'Char_walk_3.jpg';
-charWalk[4].src = 'Char_walk_4.jpg';
-charWalk[5].src = 'Char_walk_5.jpg';
+charWalk[0].src = 'Char_walk_0.png';
+charWalk[1].src = 'Char_walk_1.png';
+charWalk[2].src = 'Char_walk_2.png';
+charWalk[3].src = 'Char_walk_3.png';
+charWalk[4].src = 'Char_walk_4.png';
+charWalk[5].src = 'Char_walk_5.png';
 
 let frameIndex = 0;
 let frameCount = 0;
