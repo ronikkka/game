@@ -6,6 +6,31 @@ const healthEl = document.getElementById('health');
 let gameState = { running: false, paused: false, score: 0, health: 3 };
 let keys = {};
 
+const bgImage = new Image();
+bgImage.src = 'fon.jpg';
+
+const coinImage = new Image();
+coinImage.src = 'Coin.jpg';
+
+const charIdle = new Image();
+charIdle.src = 'Char1.jpg';
+
+const charWalk = [
+    new Image(), new Image(), new Image(), 
+    new Image(), new Image(), new Image()
+];
+
+charWalk[0].src = 'Char_walk_0.jpg';
+charWalk[1].src = 'Char_walk_1.jpg';
+charWalk[2].src = 'Char_walk_2.jpg';
+charWalk[3].src = 'Char_walk_3.jpg';
+charWalk[4].src = 'Char_walk_4.jpg';
+charWalk[5].src = 'Char_walk_5.jpg';
+
+let frameIndex = 0;
+let frameCount = 0;
+let facingRight = true;
+
 const player = {
     x: 50, y: 500, width: 40, height: 40, speed: 5, vX: 0, vY: 0, grounded: false
 };
@@ -97,32 +122,36 @@ function handleCollisions() {
 
 function updatePlayer() {
     player.vX = 0;
+    let isMoving = false;
 
-    if (
-        keys['ArrowLeft'] ||
-        keys['a'] || keys['A'] ||
-        keys['ф'] || keys['Ф']
-    ) {
+    if (keys['ArrowLeft'] || keys['a'] || keys['A'] || keys['ф'] || keys['Ф']) {
         player.vX = -player.speed;
+        facingRight = false;
+        isMoving = true;
     }
 
-    if (
-        keys['ArrowRight'] ||
-        keys['d'] || keys['D'] ||
-        keys['в'] || keys['В']
-    ) {
+    if (keys['ArrowRight'] || keys['d'] || keys['D'] || keys['в'] || keys['В']) {
         player.vX = player.speed;
+        facingRight = true;
+        isMoving = true;
     }
 
-    if (
-        (keys['ArrowUp'] ||
-         keys['w'] || keys['W'] ||
-         keys['ц'] || keys['Ц'] ||
-         keys[' ']) &&
-        player.grounded
-    ) {
+    if ((keys['ArrowUp'] || keys['w'] || keys['W'] || keys['ц'] || keys['Ц'] || keys[' ']) && player.grounded) {
         player.vY = -14;
         player.grounded = false;
+    }
+
+    if (isMoving && player.grounded) {
+        frameCount++;
+        if (frameCount >= 5) {
+            frameIndex++;
+            if (frameIndex >= charWalk.length) {
+                frameIndex = 0;
+            }
+            frameCount = 0;
+        }
+    } else {
+        frameIndex = 0;
     }
 
     if (!player.grounded) player.vY += 0.9;
@@ -142,16 +171,17 @@ function updatePlayer() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#87CEEB');
-    gradient.addColorStop(1, '#98D8E8');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (bgImage.complete) {
+        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+    } else {
+        ctx.fillStyle = '#87CEEB';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
-    ctx.fillStyle = '#27AE60';
+    ctx.fillStyle = '#634b9f';
     platforms.forEach(p => {
         ctx.fillRect(p.x, p.y, p.width, p.height);
-        ctx.strokeStyle = '#229954';
+        ctx.strokeStyle = '#28115d';
         ctx.lineWidth = 2;
         ctx.strokeRect(p.x, p.y, p.width, p.height);
     });
@@ -166,24 +196,41 @@ function draw() {
 
     coins.forEach(coin => {
         if (!coin.collected) {
-            ctx.fillStyle = 'gold';
-            ctx.beginPath();
-            ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, Math.PI*2);
-            ctx.fill();
-            ctx.strokeStyle = 'orange';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            if (coinImage.complete) {
+                ctx.drawImage(coinImage, coin.x, coin.y, coin.width, coin.height);
+            } else {
+                ctx.fillStyle = 'gold';
+                ctx.beginPath();
+                ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, Math.PI*2);
+                ctx.fill();
+            }
         }
     });
 
-    ctx.fillStyle = '#3498DB';
-    ctx.fillRect(player.x, player.y, player.width, player.height);
-    ctx.fillStyle = 'white';
-    ctx.fillRect(player.x + 8, player.y + 10, 6, 6);
-    ctx.fillRect(player.x + 25, player.y + 10, 6, 6);
-    ctx.fillStyle = 'black';
-    ctx.fillRect(player.x + 10, player.y + 12, 2, 2);
-    ctx.fillRect(player.x + 27, player.y + 12, 2, 2);
+    let currentImage;
+    
+    if (player.vX === 0 || !player.grounded) {
+        currentImage = charIdle; 
+    } else {
+        currentImage = charWalk[frameIndex];
+    }
+
+    if (currentImage.complete) {
+        ctx.save();
+
+        if (!facingRight) {
+            ctx.translate(player.x + player.width, player.y);
+            ctx.scale(-1, 1);
+            ctx.drawImage(currentImage, 0, 0, player.width, player.height);
+        } else {
+            ctx.drawImage(currentImage, player.x, player.y, player.width, player.height);
+        }
+
+        ctx.restore();
+    } else {
+        ctx.fillStyle = '#3498DB';
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
 }
 
 let gameLoopId = null;
