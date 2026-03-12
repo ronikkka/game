@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const healthEl = document.getElementById('health');
 
-let gameState = { running: true, paused: false, score: 0, health: 3 };
+let gameState = { running: false, paused: false, score: 0, health: 3 };
 let keys = {};
 
 const player = {
@@ -22,10 +22,6 @@ const enemies = [
 ];
 
 function init() {
-    //if (gameLoopId !== null) {          
-      //  cancelAnimationFrame(gameLoopId); 
-        //gameLoopId = null;              
-    //}
     gameState.running = false;
     gameState.paused = false;
     player.x = 50; 
@@ -158,11 +154,19 @@ function draw() {
 let gameLoopId = null;
 
 function gameLoop() {
-    if (!gameState.paused) {
+    if (gameState.running && !gameState.paused) {  
         updatePlayer();
         gameState.score += 1;
         updateUI();
         draw();
+    } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        ctx.fillStyle = '#87CEEB'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '48px Arial';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.fillText('Нажмите СТАРТ', canvas.width/2, canvas.height/2);
     }
     gameLoopId = requestAnimationFrame(gameLoop);
 }
@@ -175,6 +179,7 @@ function endGame(win) {
 }
 
 function startGameLoop() { 
+    gameState.running = true; 
     gameState.paused = false;
 }
 
