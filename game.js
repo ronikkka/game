@@ -78,9 +78,30 @@ function handleCollisions() {
 
 function updatePlayer() {
     player.vX = 0;
-    if (keys['ArrowLeft'] || keys['a'] || keys['A']) player.vX = -player.speed;
-    if (keys['ArrowRight'] || keys['d'] || keys['D']) player.vX = player.speed;
-    if ((keys['ArrowUp'] || keys['w'] || keys['W'] || keys[' ']) && player.grounded) {
+
+    if (
+        keys['ArrowLeft'] ||
+        keys['a'] || keys['A'] ||
+        keys['ф'] || keys['Ф']
+    ) {
+        player.vX = -player.speed;
+    }
+
+    if (
+        keys['ArrowRight'] ||
+        keys['d'] || keys['D'] ||
+        keys['в'] || keys['В']
+    ) {
+        player.vX = player.speed;
+    }
+
+    if (
+        (keys['ArrowUp'] ||
+         keys['w'] || keys['W'] ||
+         keys['ц'] || keys['Ц'] ||
+         keys[' ']) &&
+        player.grounded
+    ) {
         player.vY = -14;
         player.grounded = false;
     }
@@ -92,9 +113,9 @@ function updatePlayer() {
     if (player.x < 0) player.x = 0;
     if (player.x > canvas.width - player.width) {
         player.x = canvas.width - player.width;
-        endGame(true); 
+        endGame(true);
     }
-    if (player.y > canvas.height + 50) endGame(false); 
+    if (player.y > canvas.height + 50) endGame(false);
 
     handleCollisions();
 }
