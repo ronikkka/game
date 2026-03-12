@@ -77,6 +77,10 @@ function handleCollisions() {
     enemies.forEach(e => {
         if (checkCollision(player, e)) {
             gameState.health--;
+            gameState.score -= 300;
+            if (gameState.score < 0) {
+                gameState.score = 0;
+            }
             player.x = 50; player.y = 500; player.vX = 0; player.vY = 0;
             if (gameState.health <= 0) endGame(false);
         }
