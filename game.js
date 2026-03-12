@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const healthEl = document.getElementById('health');
 
-let gameState = { running: false, paused: false, score: 0, health: 3 };
+let gameState = { running: true, paused: false, score: 0, health: 3 };
 let keys = {};
 
 const player = {
@@ -22,10 +22,10 @@ const enemies = [
 ];
 
 function init() {
-    if (gameLoopId !== null) {          
-        cancelAnimationFrame(gameLoopId); 
-        gameLoopId = null;              
-    }
+    //if (gameLoopId !== null) {          
+      //  cancelAnimationFrame(gameLoopId); 
+        //gameLoopId = null;              
+    //}
     gameState.running = false;
     gameState.paused = false;
     player.x = 50; 
@@ -158,32 +158,24 @@ function draw() {
 let gameLoopId = null;
 
 function gameLoop() {
-    if (!gameState.running) return;
-
-    if (gameState.paused) {
-        gameLoopId = requestAnimationFrame(gameLoop);
-        return;
+    if (!gameState.paused) {
+        updatePlayer();
+        gameState.score += 1;
+        updateUI();
+        draw();
     }
-
-    updatePlayer();
-    gameState.score += 1;
-    updateUI();
-    draw();
     gameLoopId = requestAnimationFrame(gameLoop);
 }
 
+
 function endGame(win) {
-    cancelAnimationFrame(gameLoopId);
-    gameState.running = false;
+    gameState.paused = true; 
     const message = win ? `Победа! Счёт: ${gameState.score}` : `Поражение! Счёт: ${gameState.score}`;
     setTimeout(() => alert(message), 100);
 }
 
-function startGameLoop() {  
-    if (!gameState.running) {
-        gameState.running = true;
-        gameLoop();
-    }
+function startGameLoop() { 
+    gameState.paused = false;
 }
 
 document.addEventListener('keydown', e => keys[e.key] = true);
@@ -199,3 +191,6 @@ document.getElementById('restart').onclick = () => {
     init();
     startGameLoop();
 };
+
+init();       
+gameLoop();    
