@@ -12,22 +12,9 @@ bgImage.src = 'fon.png';
 const coinImage = new Image();
 coinImage.src = 'Coin.png';
 
-const charIdle = new Image();
-charIdle.src = 'Char1.png';
+const playerImage = new Image();
+playerImage.src = 'Char_walk_1.png';
 
-const charWalk = [
-    new Image(), new Image(), new Image(), 
-    new Image(), new Image(), new Image()
-];
-charWalk[0].src = 'Char_walk_0.png';
-charWalk[1].src = 'Char_walk_1.png';
-charWalk[2].src = 'Char_walk_2.png';
-charWalk[3].src = 'Char_walk_3.png';
-charWalk[4].src = 'Char_walk_4.png';
-charWalk[5].src = 'Char_walk_5.png';
-
-let frameIndex = 0;
-let lastFrameTime = Date.now(); 
 let facingRight = true;
 
 const player = {
@@ -73,7 +60,6 @@ function init() {
     enemies[0].dir = 1;
     updateUI();
     keys = {};
-    frameIndex = 0;
 }
 
 function updateUI() {
@@ -147,20 +133,6 @@ function updatePlayer() {
         player.grounded = false;
     }
 
-    if (isMoving && player.grounded) {
-        let currentTime = Date.now();
-        if (currentTime - lastFrameTime >= 500) { 
-            frameIndex++;
-            if (frameIndex >= charWalk.length) {
-                frameIndex = 0;
-            }
-            lastFrameTime = currentTime;
-        }
-    } else {
-        frameIndex = 0;
-        lastFrameTime = Date.now();
-    }
-
     if (!player.grounded) player.vY += 0.9;
     player.x += player.vX;
     player.y += player.vY;
@@ -214,22 +186,17 @@ function draw() {
         }
     });
 
-    let currentImage;
-    if (player.vX === 0 || !player.grounded) {
-        currentImage = charIdle;
-    } else {
-        currentImage = charWalk[frameIndex];
-    }
-
-    if (currentImage && currentImage.complete && currentImage.naturalWidth !== 0) {
+    if (playerImage.complete && playerImage.naturalWidth !== 0) {
         ctx.save();
+        
         if (!facingRight) {
             ctx.translate(player.x + player.width, player.y);
             ctx.scale(-1, 1);
-            ctx.drawImage(currentImage, 0, 0, player.width, player.height);
+            ctx.drawImage(playerImage, 0, 0, player.width, player.height);
         } else {
-            ctx.drawImage(currentImage, player.x, player.y, player.width, player.height);
+            ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
         }
+        
         ctx.restore();
     } else {
         ctx.fillStyle = '#3498DB';
