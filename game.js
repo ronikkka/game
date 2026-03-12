@@ -30,7 +30,7 @@ const coins = [
     {x: 700, y: 200, width: 20, height: 20, collected: false},
     {x: 150, y: 300, width: 20, height: 20, collected: false},
     {x: 550, y: 150, width: 20, height: 20, collected: false},
-    {x: 750, y: 500, width: 20, height: 20, collected: false},
+    {x: 750, y: 100, width: 20, height: 20, collected: false},
     {x: 750, y: 400, width: 20, height: 20, collected: false} 
 ];
 
