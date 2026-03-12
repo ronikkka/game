@@ -7,13 +7,13 @@ let gameState = { running: false, paused: false, score: 0, health: 3 };
 let keys = {};
 
 const bgImage = new Image();
-bgImage.src = 'fon.png';
+bgImage.src = 'fon.jpg';
 
 const coinImage = new Image();
-coinImage.src = 'Coin.png';
+coinImage.src = 'Coin.jpg';
 
 const charIdle = new Image();
-charIdle.src = 'Char1.png';
+charIdle.src = 'Char1.jpg';
 
 const charWalk = [
     new Image(), new Image(), new Image(), 
@@ -27,7 +27,6 @@ charWalk[4].src = 'Char_walk_4.png';
 charWalk[5].src = 'Char_walk_5.png';
 
 let frameIndex = 0;
-let lastFrameTime = Date.now(); 
 let facingRight = true;
 
 const player = {
@@ -62,7 +61,7 @@ function init() {
     gameState.running = false;
     gameState.paused = false;
     player.x = 50; 
-    player.y = 500; 
+    player.y = 480; 
     player.vX = 0; 
     player.vY = 0; 
     player.grounded = false;
@@ -105,12 +104,10 @@ function handleCollisions() {
             gameState.score -= 300;
             updateUI(); 
             
-            player.x = 50; player.y = 500; player.vX = 0; player.vY = 0;
+            player.x = 50; player.y = 480; player.vX = 0; player.vY = 0;
             
             if (gameState.health <= 0) {
-                setTimeout(() => {
-                    endGame(false);
-                }, 10);
+                setTimeout(() => { endGame(false); }, 10);
             }
         }
         e.x += e.speed * e.dir;
@@ -128,37 +125,20 @@ function handleCollisions() {
 
 function updatePlayer() {
     player.vX = 0;
-    let isMoving = false;
 
     if (keys['ArrowLeft'] || keys['a'] || keys['A'] || keys['ф'] || keys['Ф']) {
         player.vX = -player.speed;
         facingRight = false;
-        isMoving = true;
     }
 
     if (keys['ArrowRight'] || keys['d'] || keys['D'] || keys['в'] || keys['В']) {
         player.vX = player.speed;
         facingRight = true;
-        isMoving = true;
     }
 
     if ((keys['ArrowUp'] || keys['w'] || keys['W'] || keys['ц'] || keys['Ц'] || keys[' ']) && player.grounded) {
         player.vY = -14;
         player.grounded = false;
-    }
-
-    if (isMoving && player.grounded) {
-        let currentTime = Date.now();
-        if (currentTime - lastFrameTime >= 500) { 
-            frameIndex++;
-            if (frameIndex >= charWalk.length) {
-                frameIndex = 0;
-            }
-            lastFrameTime = currentTime;
-        }
-    } else {
-        frameIndex = 0;
-        lastFrameTime = Date.now();
     }
 
     if (!player.grounded) player.vY += 0.9;
@@ -185,10 +165,10 @@ function draw() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    ctx.fillStyle = '#8c27ae';
+    ctx.fillStyle = '#781793';
     platforms.forEach(p => {
         ctx.fillRect(p.x, p.y, p.width, p.height);
-        ctx.strokeStyle = '#300748';
+        ctx.strokeStyle = '#380b46';
         ctx.lineWidth = 2;
         ctx.strokeRect(p.x, p.y, p.width, p.height);
     });
@@ -237,6 +217,19 @@ function draw() {
     }
 }
 
+setInterval(() => {
+    if (gameState.running && !gameState.paused) {
+        if (player.vX !== 0 && player.grounded) {
+            frameIndex++;
+            if (frameIndex >= charWalk.length) {
+                frameIndex = 0;
+            }
+        } else {
+            frameIndex = 0;
+        }
+    }
+}, 500); 
+
 let gameLoopId = null;
 
 function gameLoop() {
@@ -274,16 +267,9 @@ function startGameLoop() {
 document.addEventListener('keydown', e => keys[e.key] = true);
 document.addEventListener('keyup', e => keys[e.key] = false);
 
-document.getElementById('start').onclick = () => {
-    init();
-    startGameLoop();  
-};
-
+document.getElementById('start').onclick = () => { init(); startGameLoop(); };
 document.getElementById('pause').onclick = () => gameState.paused = !gameState.paused;
-document.getElementById('restart').onclick = () => {
-    init();
-    startGameLoop();
-};
+document.getElementById('restart').onclick = () => { init(); startGameLoop(); };
 
 init();       
 gameLoop();   
