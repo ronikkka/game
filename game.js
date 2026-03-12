@@ -23,9 +23,16 @@ const enemies = [
 
 function init() {
     gameState.running = false;
-    player.x = 50; player.y = 500; player.vX = 0; player.vY = 0; player.grounded = false;
-    gameState.score = 0; gameState.health = 3;
-    enemies[0].x = 300; enemies[0].dir = 1;
+    gameState.paused = false;
+    player.x = 50; 
+    player.y = 500; 
+    player.vX = 0; 
+    player.vY = 0; 
+    player.grounded = false;
+    gameState.score = 0; 
+    gameState.health = 3;
+    enemies[0].x = 300; 
+    enemies[0].dir = 1;
     updateUI();
 }
 
@@ -122,6 +129,8 @@ function draw() {
     ctx.fillRect(player.x + 27, player.y + 12, 2, 2);
 }
 
+let gameLoopId = null;
+
 function gameLoop() {
     if (!gameState.running || gameState.paused) {
         requestAnimationFrame(gameLoop);
@@ -131,27 +140,33 @@ function gameLoop() {
     gameState.score += 1;
     updateUI();
     draw();
-    requestAnimationFrame(gameLoop);
+    gameLoopId = requestAnimationFrame(gameLoop);
 }
 
 function endGame(win) {
+    cancelAnimationFrame(gameLoopId);
     gameState.running = false;
     const message = win ? `Победа! Счёт: ${gameState.score}` : `Поражение! Счёт: ${gameState.score}`;
     setTimeout(() => alert(message), 100);
+}
+
+function startGameLoop() {  
+    if (!gameState.running) {
+        gameState.running = true;
+        gameLoop();
+    }
 }
 
 document.addEventListener('keydown', e => keys[e.key] = true);
 document.addEventListener('keyup', e => keys[e.key] = false);
 
 document.getElementById('start').onclick = () => {
-    if (!gameState.running) {
-        init();
-        gameState.running = true;
-        gameLoop();
-    }
+    init();
+    startGameLoop();  
 };
+
 document.getElementById('pause').onclick = () => gameState.paused = !gameState.paused;
 document.getElementById('restart').onclick = () => {
     init();
-    if (gameState.running) gameLoop();
+    startGameLoop();
 };
