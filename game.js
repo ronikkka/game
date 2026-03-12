@@ -34,6 +34,7 @@ function init() {
     enemies[0].x = 300; 
     enemies[0].dir = 1;
     updateUI();
+    keys = {};
 }
 
 function updateUI() {
@@ -132,10 +133,13 @@ function draw() {
 let gameLoopId = null;
 
 function gameLoop() {
-    if (!gameState.running || gameState.paused) {
-        requestAnimationFrame(gameLoop);
+    if (!gameState.running) return;
+
+    if (gameState.paused) {
+        gameLoopId = requestAnimationFrame(gameLoop);
         return;
     }
+
     updatePlayer();
     gameState.score += 1;
     updateUI();
