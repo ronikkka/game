@@ -30,7 +30,7 @@ const coins = [
     {x: 700, y: 200, width: 20, height: 20, collected: false},
     {x: 150, y: 300, width: 20, height: 20, collected: false},
     {x: 550, y: 150, width: 20, height: 20, collected: false},
-    {x: 400, y: 280, width: 20, height: 20, collected: false},
+    {x: 750, y: 500, width: 20, height: 20, collected: false},
     {x: 750, y: 400, width: 20, height: 20, collected: false} 
 ];
 
@@ -191,7 +191,6 @@ function gameLoop() {
     console.log('running=', gameState.running);
     if (gameState.running && !gameState.paused) {  
         updatePlayer();
-        gameState.score += 1;
         updateUI();
         draw();
     } else {
@@ -209,13 +208,14 @@ function gameLoop() {
 
 function endGame(win) {
     if (win) {
-        let timeBonus = Math.max(0, 1000 - gameState.score/10); 
+        let timeBonus = Math.max(0, 5000 - gameState.score);
         gameState.score += timeBonus;
         updateUI();
+        alert(`Победа! Счёт: ${gameState.score} (+${timeBonus} бонус за скорость)`);
+    } else {
+        alert(`Поражение! Счёт: ${gameState.score}`);
     }
-    gameState.paused = true; 
-    const message = win ? `Победа! Счёт: ${gameState.score}` : `Поражение! Счёт: ${gameState.score}`;
-    setTimeout(() => alert(message), 100);
+    gameState.paused = true;
 }
 
 function startGameLoop() { 
