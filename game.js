@@ -22,6 +22,10 @@ const enemies = [
 ];
 
 function init() {
+    if (gameLoopId !== null) {          
+        cancelAnimationFrame(gameLoopId); 
+        gameLoopId = null;              
+    }
     gameState.running = false;
     gameState.paused = false;
     player.x = 50; 
