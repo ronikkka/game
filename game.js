@@ -30,9 +30,16 @@ bgImage.src = 'fon.png';
 const coinImage = new Image();
 coinImage.src = 'Coin.png';
 
-const playerImage = new Image();
-playerImage.src = 'Char_walk_1.png';
+const playerFrames = [];
+for (let i = 0; i < 6; i++) {
+    const img = new Image();
+    img.src = `Char_walk_${i}.png`;
+    playerFrames.push(img);
+}
 
+let currentFrame = 0;
+let animationTimer = 0;
+let animationSpeed = 16;
 let facingRight = true;
 
 const player = {
@@ -75,34 +82,24 @@ function generateLevel(level) {
     let lastY = 480;
 
     for (let i = 0; i < platformCount; i++) {
-        const width = randomInt(90, Math.max(100, 150 - level * 2));
-        const gap = randomInt(120, Math.min(190 + level * 12, 260));
-        const yChange = randomInt(-110, 110);
+        const width = randomInt(110, 160);
+        const gap = randomInt(90, 150);
+        const yChange = randomInt(-80, 80);
+
 
         let x = currentX + gap;
         let y = lastY + yChange;
 
-        if (y < 180) y = 180;
-        if (y > 520) y = 520;
+        if (y < 220) y = 220;
+        if (y > 500) y = 500;
+
 
         if (x + width > 760) break;
 
         const platform = { x, y, width, height: 20 };
         platforms.push(platform);
 
-        const coinCount = Math.random() < 0.5 ? 1 : 2;
-        for (let j = 0; j < coinCount; j++) {
-            const coinX = x + 20 + j * 35;
-            if (coinX + 35 < x + width) {
-                coins.push({
-                    x: coinX,
-                    y: y - 40,
-                    width: 35,
-                    height: 35,
-                    collected: false
-                });
-            }
-        }
+        let hasEnemy = false;
 
         if (level >= 2 && Math.random() < 0.5 && width >= 100) {
             const enemyWidth = 30;
@@ -121,7 +118,34 @@ function generateLevel(level) {
                 minX: minX,
                 maxX: maxX
             });
+
+            hasEnemy = true;
         }
+
+if (hasEnemy) {
+    coins.push({
+        x: x + width - 45,
+        y: y - 40,
+        width: 35,
+        height: 35,
+        collected: false
+    });
+} else {
+    const coinCount = Math.random() < 0.5 ? 1 : 2;
+    for (let j = 0; j < coinCount; j++) {
+        const coinX = x + 20 + j * 35;
+        if (coinX + 35 < x + width) {
+            coins.push({
+                x: coinX,
+                y: y - 40,
+                width: 35,
+                height: 35,
+                collected: false
+            });
+        }
+    }
+}
+
 
 
         currentX = x;
@@ -234,6 +258,20 @@ function updatePlayer() {
         player.grounded = false;
     }
 
+    if (player.vX !== 0 && player.grounded) {
+        animationTimer++;
+        if (animationTimer >= animationSpeed) {
+            animationTimer = 0;
+            currentFrame++;
+            if (currentFrame >= playerFrames.length) {
+                currentFrame = 0;
+            }
+        }
+    } else {
+        currentFrame = 0;
+        animationTimer = 0;
+    }
+
     if (!player.grounded) player.vY += 0.9;
 
     player.x += player.vX;
@@ -296,15 +334,17 @@ function draw() {
         }
     });
 
-    if (playerImage.complete && playerImage.naturalWidth !== 0) {
+    const currentImage = playerFrames[currentFrame];
+
+    if (currentImage && currentImage.complete && currentImage.naturalWidth !== 0) {
         ctx.save();
 
         if (!facingRight) {
             ctx.translate(player.x + player.width, player.y);
             ctx.scale(-1, 1);
-            ctx.drawImage(playerImage, 0, 0, player.width, player.height);
+            ctx.drawImage(currentImage, 0, 0, player.width, player.height);
         } else {
-            ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+            ctx.drawImage(currentImage, player.x, player.y, player.width, player.height);
         }
 
         ctx.restore();
@@ -312,6 +352,7 @@ function draw() {
         ctx.fillStyle = '#3498DB';
         ctx.fillRect(player.x, player.y, player.width, player.height);
     }
+
 
     ctx.fillStyle = 'rgba(255,255,255,0.75)';
     ctx.fillRect(20, 20, 140, 36);
