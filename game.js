@@ -30,16 +30,9 @@ bgImage.src = 'fon.png';
 const coinImage = new Image();
 coinImage.src = 'Coin.png';
 
-const playerFrames = [];
-for (let i = 0; i < 6; i++) {
-    const img = new Image();
-    img.src = `Char_walk_${i}.png`;
-    playerFrames.push(img);
-}
+const playerImage = new Image();
+playerImage.src = 'Char_walk_1.png';
 
-let currentFrame = 0;
-let animationTimer = 0;
-let animationSpeed = 16;
 let facingRight = true;
 
 const player = {
@@ -241,20 +234,6 @@ function updatePlayer() {
         player.grounded = false;
     }
 
-    if (player.vX !== 0 && player.grounded) {
-        animationTimer++;
-        if (animationTimer >= animationSpeed) {
-            animationTimer = 0;
-            currentFrame++;
-            if (currentFrame >= playerFrames.length) {
-                currentFrame = 0;
-            }
-        }
-    } else {
-        currentFrame = 0;
-        animationTimer = 0;
-    }
-
     if (!player.grounded) player.vY += 0.9;
 
     player.x += player.vX;
@@ -317,17 +296,15 @@ function draw() {
         }
     });
 
-    const currentImage = playerFrames[currentFrame];
-
-    if (currentImage && currentImage.complete && currentImage.naturalWidth !== 0) {
+    if (playerImage.complete && playerImage.naturalWidth !== 0) {
         ctx.save();
 
         if (!facingRight) {
             ctx.translate(player.x + player.width, player.y);
             ctx.scale(-1, 1);
-            ctx.drawImage(currentImage, 0, 0, player.width, player.height);
+            ctx.drawImage(playerImage, 0, 0, player.width, player.height);
         } else {
-            ctx.drawImage(currentImage, player.x, player.y, player.width, player.height);
+            ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
         }
 
         ctx.restore();
@@ -335,7 +312,6 @@ function draw() {
         ctx.fillStyle = '#3498DB';
         ctx.fillRect(player.x, player.y, player.width, player.height);
     }
-
 
     ctx.fillStyle = 'rgba(255,255,255,0.75)';
     ctx.fillRect(20, 20, 140, 36);
