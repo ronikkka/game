@@ -113,7 +113,7 @@ function generateLevel(level) {
                 y: y - 30,
                 width: enemyWidth,
                 height: 30,
-                speed: Math.min(1.5 + level * 0.3, 4.5),
+                speed: Math.min(0.8 + level * 0.15, 2.2),
                 dir: Math.random() < 0.5 ? -1 : 1,
                 minX: minX,
                 maxX: maxX
