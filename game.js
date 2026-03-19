@@ -104,18 +104,25 @@ function generateLevel(level) {
             }
         }
 
-        if (level >= 2 && Math.random() < 0.6) {
+        if (level >= 2 && Math.random() < 0.5 && width >= 100) {
+            const enemyWidth = 30;
+            const patrolWidth = width / 2;
+            const centerX = x + width / 2;
+            const minX = centerX - patrolWidth / 2;
+            const maxX = centerX + patrolWidth / 2 - enemyWidth;
+
             enemies.push({
-                x: x + width / 2 - 15,
+                x: centerX - enemyWidth / 2,
                 y: y - 30,
-                width: 30,
+                width: enemyWidth,
                 height: 30,
-                speed: Math.min(1.5 + level * 0.35, 5),
+                speed: Math.min(1.5 + level * 0.3, 4.5),
                 dir: Math.random() < 0.5 ? -1 : 1,
-                minX: x,
-                maxX: x + width - 30
+                minX: minX,
+                maxX: maxX
             });
         }
+
 
         currentX = x;
         lastY = y;
