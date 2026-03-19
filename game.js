@@ -75,9 +75,9 @@ function generateLevel(level) {
     let lastY = 480;
 
     for (let i = 0; i < platformCount; i++) {
-        const width = randomInt(110, Math.max(120, 170 - level * 3));
-        const gap = randomInt(70, Math.min(140 + level * 10, 220));
-        const yChange = randomInt(-90, 90);
+        const width = randomInt(90, Math.max(100, 150 - level * 2));
+        const gap = randomInt(120, Math.min(190 + level * 12, 260));
+        const yChange = randomInt(-110, 110);
 
         let x = currentX + gap;
         let y = lastY + yChange;
@@ -306,11 +306,12 @@ function draw() {
         ctx.fillRect(player.x, player.y, player.width, player.height);
     }
 
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.fillRect(10, 10, 170, 40);
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.fillRect(20, 20, 140, 36);
     ctx.fillStyle = '#222';
-    ctx.font = '20px Arial';
-    ctx.fillText(`Уровень: ${gameState.level}`, 20, 37);
+    ctx.font = '22px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Уровень: ${gameState.level}`, 30, 45);
 }
 
 let gameLoopId = null;
